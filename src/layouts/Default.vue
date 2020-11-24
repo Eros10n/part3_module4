@@ -71,17 +71,19 @@
               <el-col :span="14" style="padding-left: 20px">
                 <el-slider
                   @change="changeTime"
+                  :format-tooltip="$util.formatTime"
                   :max="music.maxTime"
                   v-model="music.currentTime"
                   style="width: 100%;"
                 ></el-slider>
               </el-col>
-              <el-col :span="6" style="padding: 9px 0px 0px 10px;color:#909399;font-size: 13px">
-                <!-- {{$util.formatTime(music.currentTime)}}/{{$util.formatTime(music.maxTime)}} -->
-              </el-col>
+              <el-col
+                :span="6"
+                style="padding: 9px 0px 0px 10px;color:#909399;font-size: 13px"
+              >{{$util.formatTime(music.currentTime)}}/{{$util.formatTime(music.maxTime)}}</el-col>
             </el-row>
 
-            <audio ref="music" loop autoplay v-if="true">
+            <audio ref="music" loop autoplay v-if="audioAutoPlay">
               <source :src="audioUrl" type="audio/mpeg" />
             </audio>
             <audio ref="music" loop v-else>
@@ -148,10 +150,15 @@ query {
 </static-query>
 
 <script>
-// import Sidebar from "../components/Sidebar";
-// import AppMain from "../components/AppMain";
-// import Foot from "../components/Foot";
+import Sidebar from "../components/Sidebar";
+import AppMain from "../components/AppMain";
+import Foot from "../components/Foot";
 export default {
+  components: {
+    Sidebar,
+    AppMain,
+    Foot
+  },
   data() {
     return {
       music: {
@@ -178,7 +185,13 @@ export default {
       audioUrl:
         "http://sc1.111ttt.cn:8282/2018/1/03m/13/396131232171.m4a?tflag=1519095601&pin=6cd414115fdb9a950d827487b16b5f97#.mp3",
       mini: false,
-      webSites: [{ name: "v2ex", url: "https://www.v2ex.com/member/laziji" }]
+      webSites: [{ name: "v2ex", url: "https://www.v2ex.com/member/laziji" }],
+      avatarUrl: null,
+      name: null,
+      location: null,
+      blog: null,
+      followers: 0,
+      following: 0
     };
   },
   methods: {
@@ -211,22 +224,22 @@ export default {
       }
     },
     moveIcon(index) {
-      // let width = window.innerWidth;
-      // this.randomIcon[index]["top"] = this.$util.randomInt(20, 300);
-      // let left = this.$util.randomInt(10, width - 310);
-      // if (left > width / 2 - 150) {
-      //   left += 300;
-      // }
-      // this.randomIcon[index]["left"] = left;
+      let width = window.innerWidth;
+      this.randomIcon[index]["top"] = this.$util.randomInt(20, 300);
+      let left = this.$util.randomInt(10, width - 310);
+      if (left > width / 2 - 150) {
+        left += 300;
+      }
+      this.randomIcon[index]["left"] = left;
     },
     full() {
-      // if (!this.fullButton.full) {
-      //   this.$util.fullScreen();
-      //   this.fullButton.full = true;
-      // } else {
-      //   this.$util.fullExit();
-      //   this.fullButton.full = false;
-      // }
+      if (!this.fullButton.full) {
+        this.$util.fullScreen();
+        this.fullButton.full = true;
+      } else {
+        this.$util.fullExit();
+        this.fullButton.full = false;
+      }
     },
     listenMusic() {
       if (!this.$refs.music) {
@@ -268,7 +281,11 @@ export default {
 
 <style>
 body {
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
   margin: 0;
+  padding: 0;
+  line-height: 1.5;
 }
 
 .page-header {
