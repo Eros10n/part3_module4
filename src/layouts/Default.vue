@@ -131,7 +131,12 @@
           <sidebar></sidebar>
         </el-col>
         <el-col :span="18" style="padding-left:10px">
-          <app-main></app-main>
+          <!-- <app-main></app-main> -->
+          <section>
+    <transition name="fade">
+      <slot />
+    </transition>
+  </section>
         </el-col>
       </el-row>
     </section>
@@ -280,6 +285,16 @@ export default {
 </script>
 
 <style>
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
 body {
   font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;

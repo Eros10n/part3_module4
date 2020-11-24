@@ -5,25 +5,45 @@
 // Changes here require a server restart.
 // To restart press CTRL + C in terminal and run `gridsome develop`
 
-// import request from '@/utils/request'
+const GistApi = require('./src/api/gist')
 
 module.exports = function(api) {
-    api.loadSource(({ addCollection }) => {
-        // Use the Data Store API here: https://gridsome.org/docs/data-store-api/
-        // const collection = addCollection('Post')
+  api.loadSource(({ addCollection }) => {
+    // Use the Data Store API here: https://gridsome.org/docs/data-store-api/
+    const collection = addCollection('news')
+    GistApi.list().then((response) => {
+      let result = response.data
+      if (!result || result.length == 0) {
+        this.loading = false
+        return
+      }
+      for (let key in result[0].files) {
+        this.blog.id = result[0]['id']
+        break
+      }
+      GistApi.single(this.blog.id).then((response) => {
+        let result = response.data
 
-        // const { data } = await axios.get('https://api.example.com/posts')
-
-        // for (const item of data) {
-        //     collection.addNode({
-        //         id: item.id,
-        //         title: item.title,
-        //         content: item.content
-        //     })
-        // }
+        for (let key in result.files) {
+          collection.addNode({
+              title: key,
+              // content: this.$markdown(result.files[key]['content']),
+              description: description,
+              // createTime:
+            })
+            // this.blog['title'] = key
+            // this.blog['content'] = this.$markdown(result.files[key]['content'])
+            // this.blog['description'] = result['description']
+            // this.blog['createTime'] = this.$util.utcToLocal(result['created_at'])
+            // this.blog['updateTime'] = this.$util.utcToLocal(result['updated_at'])
+            // break
+        }
+      })
     })
+  })
 
-    api.createPages(({ createPage }) => {
-        // Use the Pages API here: https://gridsome.org/docs/pages-api/
-    })
+  api.createPages(({ createPage }) => {
+    // Use the Pages API here: https://gridsome.org/docs/pages-api/
+  })
+
 }
