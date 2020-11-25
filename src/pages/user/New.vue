@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <div style="min-height: 600px" v-loading="loading">
+    <div style="min-height: 600px">
       <el-card shadow="never" style="min-height: 400px" v-if="blog.id">
         <div slot="header">
           <span>{{blog.title}}</span>
@@ -29,17 +29,28 @@
     </div>
   </Layout>
 </template>
+<page-query>
+query {
+  new:allNews (perPage: 1, page: 1, order: ASC) @paginate{
+    edges {
+      node {
+        id
+        created_at
+        files {
+          filename
+        }
+      }
+    }
+	}
+}
+</page-query>
 
 <script>
+import axios from 'axios'
 export default {
   name: "user",
   data() {
     return {
-      query: {
-        page: 1,
-        pageSize: 1,
-      },
-      loading: false,
       blog: {
         id: "",
         title: "",
@@ -51,7 +62,24 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    // console.log(this.$page.new)
+                for (let key in this.$page.new.edges[0].node.files) {
+                    this.blog.id = this.$page.new.edges[0].node['id']
+                    break
+                }
+                axios.get(`https://api.github.com/gists/${this.blog.id}`).then((response) => {
+                    let result = response.data
+                    for (let key in result.files) {
+                        this.blog['title'] = key
+                        this.blog['content'] = this.$markdown(result.files[key]['content'])
+                        this.blog['description'] = result['description']
+                        this.blog['createTime'] = this.$util.utcToLocal(result['created_at'])
+                        this.blog['updateTime'] = this.$util.utcToLocal(result['updated_at'])
+                        break
+                    }
+                }).then(() => this.loading = false)
+  },
   methods: {},
 };
 </script>
