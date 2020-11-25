@@ -133,10 +133,10 @@
         <el-col :span="18" style="padding-left:10px">
           <!-- <app-main></app-main> -->
           <section>
-    <transition name="fade">
-      <slot />
-    </transition>
-  </section>
+            <transition name="fade">
+              <slot />
+            </transition>
+          </section>
         </el-col>
       </el-row>
     </section>
@@ -162,7 +162,7 @@ export default {
   components: {
     Sidebar,
     AppMain,
-    Foot
+    Foot,
   },
   data() {
     return {
@@ -170,13 +170,13 @@ export default {
         isPlay: false,
         currentTime: 0,
         maxTime: 0,
-        volume: 100
+        volume: 100,
       },
       fullButton: {
-        full: false
+        full: false,
       },
       topbar: {
-        active: ""
+        active: "",
       },
       randomIcon: [],
       githubUsername: "GitHub-Laziji",
@@ -196,7 +196,8 @@ export default {
       location: null,
       blog: null,
       followers: 0,
-      following: 0
+      following: 0,
+      audioAutoPlay:false
     };
   },
   methods: {
@@ -215,7 +216,7 @@ export default {
           } else {
             this.$message({
               message: "博主没有其他博客",
-              type: "info"
+              type: "info",
             });
           }
           break;
@@ -279,13 +280,12 @@ export default {
         this.music.volume = 0;
       }
       this.$refs.music.volume = this.music.volume / 100;
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style>
-
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.2s;
