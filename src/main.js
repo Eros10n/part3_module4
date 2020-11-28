@@ -17,4 +17,26 @@ export default function(Vue, { router, head, isClient }) {
   Vue.prototype.$markdown = function(value) {
     return mavonEditor.markdownIt.render(value)
   }
+
+  Vue.prototype.$share = function(message) {
+    if (!message) {
+      message = window.location
+    } else {
+      // let arr = (window.location + "").split("#")
+      message = window.location + message
+    }
+    if (util.copy(message)) {
+      Vue.prototype.$confirm('链接已复制,去分享给好友吧!!', '分享', {
+        showCancelButton: false,
+        showClose: false,
+        type: 'success'
+      })
+    } else {
+      Vue.prototype.$confirm('链接复制失败,可能因为浏览器不兼容', '分享', {
+        showCancelButton: false,
+        showClose: false,
+        type: 'warning'
+      })
+    }
+  }
 }

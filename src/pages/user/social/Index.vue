@@ -35,10 +35,13 @@
               </el-row>
 
               <div style="text-align: center;margin-top: 10px">
-                <pager :info="$page.followers.pageInfo" />
+                <el-pagination @current-change="onSelect" background layout="prev, pager, next" :current-page.sync="$page.followers.pageInfo.currentPage"
+                                    :page-size="9" :total="9*$page.followers.pageInfo.totalPages">
+                                </el-pagination>
+                <!-- <pager :info="$page.followers.pageInfo" /> -->
                 <!-- <el-pagination @current-change="onSelect" background layout="prev, pager, next" :current-page.sync="followers.query.page"
                                     :page-size="followers.query.pageSize" :total="followers.query.pageNumber*followers.query.pageSize">
-                </el-pagination>-->
+                </el-pagination> -->
               </div>
             </div>
             <div
@@ -68,10 +71,10 @@
                                 </el-col>
                             </el-row>
                             <div style="text-align: center;margin-top: 10px">
-                                <pager :info="$page.followings.pageInfo" />
-                                <!-- <el-pagination @current-change="onSelect" background layout="prev, pager, next" :current-page.sync="following.query.page"
-                                    :page-size="following.query.pageSize" :total="following.query.pageNumber*following.query.pageSize">
-                                </el-pagination> -->
+                                <!-- <pager :info="$page.followings.pageInfo" /> -->
+                                <el-pagination @current-change="onSelect" background layout="prev, pager, next" :current-page.sync="$page.followings.pageInfo.currentPage"
+                                    :page-size="9" :total="9*$page.followings.pageInfo.totalPages">
+                                </el-pagination>
                             </div>
                         </div>
                         <div style="min-height: 300px;margin-bottom: 20px;padding: 20px 0px 20px 0px;text-align: center" v-else>
@@ -153,17 +156,31 @@ export default {
     };
   },
   mounted() {
-    this.onSelect();
-    console.log(this.$page);
+    // this.onSelect();
   },
   methods: {
-    onSelect() {
+    onSelect(page) {
       switch (this.activeTab) {
         case "followers":
-        //   this.listFollowers();
+          if(typeof page === 'number' && page !== 1){
+            this.$router.push(`/user/social/${page}`)
+            this.$page.followers.pageInfo.currentPage = page
+          }
+          else{
+            this.$router.push(`/user/social`)
+            this.$page.followers.pageInfo.currentPage = 1
+          }
+             
           break;
         case "following":
-        //   this.listFollowing();
+          if(typeof page === 'number' && page !== 1){
+            this.$router.push(`/user/social/${page}`)
+            this.$page.followings.pageInfo.currentPage = page
+          }
+          else {
+             this.$router.push(`/user/social`)
+             this.$page.followings.pageInfo.currentPage = 1
+          }
           break;
         default:
           break;

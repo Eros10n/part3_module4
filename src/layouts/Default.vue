@@ -96,14 +96,14 @@
             </div>
             <div style="color:#606266;">
               <i class="el-icon-location"></i>
-              &nbsp;{{location?location:'未填写地址'}}
+              &nbsp;{{this.$static.user.location?this.$static.user.location:'未填写地址'}}
               <br />
             </div>
           </el-col>
           <el-col :span="2" style="text-align: center;">
             <img
               v-popover:bigAvatar
-              :src="avatarUrl"
+              :src="this.$static.user.avatar_url"
               style="margin-top: 4px;margin-right: 10px;width:52px; height:52px; border-radius:5px; border: 1px solid #EBEEF5"
             />
             <el-popover
@@ -148,8 +148,10 @@
 
 <static-query>
 query {
-  metadata {
-    siteName
+   user:users(id:30425217){
+    avatar_url
+    login
+    location
   }
 }
 </static-query>
@@ -281,7 +283,7 @@ export default {
       }
       this.$refs.music.volume = this.music.volume / 100;
     },
-  },
+  }
 };
 </script>
 

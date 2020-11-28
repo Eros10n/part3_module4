@@ -34,7 +34,7 @@
             <el-row>
               <el-col :span="16">
                 <span>
-                  <a style="text-decoration:none;cursor:pointer" @click="goDetails(item.id)">
+                  <a style="text-decoration:none;cursor:pointer" @click="goDetails(item.node.id)">
                     <i class="el-icon-edit-outline"></i>
                     &nbsp;&nbsp;
                     {{ item.node.files.filename }}
@@ -44,7 +44,7 @@
               <el-col :span="8">
                 <div style="text-align: right;">
                   <el-button
-                    @click="$share('/user/blog/details/'+item.node.id)"
+                    @click="$share('/details/'+item.node.id)"
                     style="padding: 3px 0"
                     type="text"
                     icon="el-icon-share"
@@ -75,7 +75,9 @@
           >{{ item.node.description }}</div>
         </el-card>
         <div style="text-align: center">
-          <pager :info="$page.news.pageInfo" />
+          <el-pagination @current-change="onSelect" background layout="prev, pager, next" :current-page.sync="$page.news.pageInfo.currentPage"
+                                    :page-size="6" :total="6*$page.news.pageInfo.totalPages">
+                                </el-pagination>
         </div>
       </div>
 
@@ -132,8 +134,7 @@ export default {
       for (let i = 0; i < this.$page.news.edges.length; i++) {
         this.$page.news.edges[i].node.hide = this.$page.news.edges[i].node.files.filename.indexOf(this.searchKey) < 0;
       }
-      // console.log(this.$page)
-      this.$nextTick()
+      this.$forceUpdate();//强制更新
     },
     editBlog(index) {
       if (!this.token) {
@@ -174,6 +175,16 @@ export default {
     goDetails(id) {
       this.$router.push("/user/blog/details/" + id);
     },
+    onSelect(page) {
+      if(page !== 1){
+            this.$router.push(`/user/blog/${page}`)
+            this.$page.news.pageInfo.currentPage = page
+          }
+          else{
+            this.$router.push(`/user/blog`)
+            this.$page.news.pageInfo.currentPage = 1
+          }
+    }
   },
 };
 </script>
